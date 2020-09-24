@@ -4,7 +4,6 @@
 #include<netinet/in.h>
 #include<unistd.h>
 
-
 using namespace std;
 
 int main(int argc, char** argv) {
@@ -44,7 +43,7 @@ int main(int argc, char** argv) {
   sockaddr.sin_addr.s_addr = INADDR_ANY;
   sockaddr.sin_port = htons(port);
 
-  struct sockaddr* sockaddrPtr = (struct sockaddr*)&sockaddr;
+  struct sockaddr* sockaddrPtr = reinterpret_cast<struct sockaddr*>(&sockaddr);
   unsigned long addrLen = sizeof(sockaddr);
 
   if(bind(sockFd, sockaddrPtr, addrLen) < 0) {
@@ -59,7 +58,7 @@ int main(int argc, char** argv) {
   }
 
   // accept connection
-  int connection = accept(sockFd, sockaddrPtr, (socklen_t*)&addrLen);
+  int connection = accept(sockFd, sockaddrPtr, reinterpret_cast<socklen_t*>(&addrLen));
   if(connection < 0) {
     cerr << "Failed to accept connection. errno: " << errno << endl;
     exit(EXIT_FAILURE);
