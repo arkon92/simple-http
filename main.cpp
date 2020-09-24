@@ -1,8 +1,6 @@
 #include<iostream>
-#include<sys/socket.h>
-#include<cstdlib>
-#include<netinet/in.h>
-#include<unistd.h>
+
+#include "server.h"
 
 using namespace std;
 
@@ -30,55 +28,6 @@ int main(int argc, char** argv) {
 
   cout << "Basic HTTP server starting on port: " << port << endl;
 
-  // create socket file descriptor
-  int sockFd = socket(AF_INET, SOCK_STREAM, 0);
-  if (sockFd == -1) {
-    cout << "Failed to create socket: " << errno << endl;
-    exit(EXIT_FAILURE);
-  }
 
-  // bind socket to an address
-  sockaddr_in sockaddr;
-  sockaddr.sin_family = AF_INET;
-  sockaddr.sin_addr.s_addr = INADDR_ANY;
-  sockaddr.sin_port = htons(port);
-
-  struct sockaddr* sockaddrPtr = reinterpret_cast<struct sockaddr*>(&sockaddr);
-  unsigned long addrLen = sizeof(sockaddr);
-
-  if(bind(sockFd, sockaddrPtr, addrLen) < 0) {
-    cerr << "Failed to bind socket to port " << port << " errno: " << errno << endl;
-    exit(EXIT_FAILURE);
-  }
-
-  // start listening
-  if (listen(sockFd, 1) < 0) {
-    cerr << "Failed to listen. errno: " << errno << endl;
-    exit(EXIT_FAILURE);
-  }
-
-  // accept connection
-  int connection = accept(sockFd, sockaddrPtr, reinterpret_cast<socklen_t*>(&addrLen));
-  if(connection < 0) {
-    cerr << "Failed to accept connection. errno: " << errno << endl;
-    exit(EXIT_FAILURE);
-  }
-
-  // read incomming message and send the response
-  char message[100];
-  auto bytesRead = read(connection, message, 100);
-  cout << "Received: " << endl;
-  cout << message << "\n" << endl;
-
-  string response = "Got it\n";
-  if(send(connection, response.c_str(), response.size(), 0) < 0 ) {
-    cerr << "Failed to send the response" << endl;
-  }
-
-  // close the connection - need to dig in
-  shutdown(connection, SHUT_WR);
-  while (read(connection, message, 100) > 0) {}
-  close(sockFd);
-
-  exit(EXIT_SUCCESS);
+  optional<Server> s = Server::createServer(8080);
 }

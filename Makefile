@@ -1,6 +1,9 @@
-CFLAGS=--std=c++2a
+CFLAGS=--std=c++2a -g -Wall
 
-all: main.o
+all: main
 
-main.o: main.cpp
-	g++ $(CFLAGS) main.cpp -o main.o
+main: main.cpp server.cpp
+	g++ $(CFLAGS) -o main main.cpp server.cpp
+
+clean:
+	rm main && rm -r *.o
