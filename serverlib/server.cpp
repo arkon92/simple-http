@@ -1,6 +1,5 @@
 #include<iostream>
 #include<sys/socket.h>
-#include<cstdlib>
 #include<netinet/in.h>
 #include<unistd.h>
 #include<optional>
@@ -30,7 +29,7 @@ int Server::init() {
   sockaddr.sin_addr.s_addr = INADDR_ANY;
   sockaddr.sin_port = htons(port);
 
-  struct sockaddr* sockaddrPtr = reinterpret_cast<struct sockaddr*>(&sockaddr);
+  auto sockaddrPtr = reinterpret_cast<struct sockaddr*>(&sockaddr);
   unsigned long addrLen = sizeof(sockaddr);
 
   if(bind(socketFd, sockaddrPtr, addrLen) < 0) {
@@ -51,9 +50,10 @@ int Server::init() {
     return -1;
   }
 
-  // read incomming message and send the response
+  // read incoming message and send the response
   char message[100];
   auto bytesRead = read(connection, message, 100);
+  std::cout << "Bytes read: " << bytesRead << std::endl;
   std::cout << "Received: " << std::endl;
   std::cout << message << "\n" << std::endl;
 
