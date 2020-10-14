@@ -3,6 +3,7 @@ project(simple-http VERSION 0.1)
 set(CMAKE_CXX_STANDARD 20)
 
 add_subdirectory(serverlib)
+add_subdirectory(cppunitlib)
 
 set(SRCS
     main.cpp
@@ -10,4 +11,4 @@ set(SRCS
 
 add_executable(main ${SRCS})
 
-target_link_libraries(main server)
+target_link_libraries(main server unittest)
