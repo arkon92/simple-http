@@ -4,8 +4,15 @@
 
 using namespace std;
 
+constexpr int defaultPort = 8080;
+
+void handler(int signum) {
+    cout << "Shutting down the server with signal: " << signum << endl;
+    exit(EXIT_SUCCESS);
+}
+
 int main(int argc, char **argv) {
-    constexpr int defaultPort = 8080;
+    signal(SIGINT, handler);
 
     int port;
 
